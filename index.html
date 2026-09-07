@@ -493,6 +493,11 @@
 const WHATSAPP_NUMBER = "918928129792"; // host's WhatsApp number with country code, no + or spaces
 const EVENT_DATETIME_ISO = "2026-09-26T19:00:00"; // 7:00 PM, Sep 26 2026
 
+// Admin-only view: open the site with ?admin=THIS_KEY in the URL to see who claimed each gift.
+// Change this to your own secret before sharing the link, e.g. https://yoursite/?admin=your-secret
+const ADMIN_KEY = "aura5admin";
+const isAdmin = new URLSearchParams(window.location.search).get('admin') === ADMIN_KEY;
+
 const FIREBASE_CONFIG = null; // <-- paste your firebaseConfig object here to enable live cross-guest sync (see comment above)
 
 const GIFTS = [
@@ -543,7 +548,7 @@ function renderGifts() {
       <div class="gname">${g.name}</div>
       ${g.link ? `<a class="gift-link" href="${g.link}" target="_blank">View on Amazon</a>` : ''}
       ${claimedBy
-        ? `<div class="claimed-tag">Claimed by ${claimedBy}</div>`
+        ? `<div class="claimed-tag">${isAdmin ? `Claimed by ${claimedBy}` : 'Already claimed'}</div>`
         : `<button type="button" class="pick-btn" onclick="pickGift('${g.id}')">I'll bring this</button>`}
     `;
     giftGrid.appendChild(card);
