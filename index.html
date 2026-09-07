@@ -802,9 +802,12 @@ function handleRSVP(e) {
       name, attending: isAttending, guests: parseInt(guests) || 1, kids: parseInt(kids) || 0,
       giftId: selectedGiftId || null, giftName: gift ? gift.name : null, message: msg || null, ts: Date.now()
     });
-    let text = `Hi! RSVP for Aura's 5th Birthday Bash 🎉\n\nName: ${name}\nResponse: ${selectedAttend}\nGuests: ${guests} (Kids: ${kids})`;
-    if (gift) text += `\nBringing gift: ${gift.name}`;
-    if (msg) text += `\nMessage: ${msg}`;
+    let text;
+    if (isAttending) {
+      text = `Hey Hi,\n\nThis is RSVP for Aura's 5th Birthday Bash.\n\n${name} will be there!\nGuests: ${guests}\nKids: ${kids}\n\nLooking forward to this.`;
+    } else {
+      text = `Hey Hi,\nI'll not be able to make it up for Aura's 5th Birthday Bash, but I wish her a very warm Happy Birthday`;
+    }
     const encodedText = encodeURIComponent(text);
     const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
     if (isMobile) {
