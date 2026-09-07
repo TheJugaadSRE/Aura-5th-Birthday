@@ -39,6 +39,16 @@
     0%,100%{opacity:0.15;transform:scale(0.8);}
     50%{opacity:0.9;transform:scale(1.3);}
   }
+  .glow-dot{
+    position:fixed;pointer-events:none;z-index:9999;border-radius:50%;
+    background:radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(255,46,224,0.6) 40%, transparent 75%);
+    transform:translate(-50%,-50%);
+    animation:dotFade 0.7s ease-out forwards;
+  }
+  @keyframes dotFade{
+    0%{opacity:0.9;transform:translate(-50%,-50%) scale(1);}
+    100%{opacity:0;transform:translate(-50%,-50%) scale(0.2);}
+  }
   .wrap{position:relative;z-index:1;max-width:760px;margin:0 auto;padding:0 20px 80px;}
   section{padding:56px 0;}
   h1,h2,h3{font-family:'Orbitron',sans-serif;}
@@ -95,6 +105,13 @@
   }
   .cd-box .num{font-family:'Orbitron',sans-serif;font-size:28px;font-weight:800;color:var(--neon-cyan);text-shadow:0 0 10px var(--neon-cyan);}
   .cd-box .lbl{font-size:11px;color:#c9b8ef;letter-spacing:1px;text-transform:uppercase;margin-top:2px;}
+  .stats-row{display:flex;justify-content:center;gap:16px;margin-top:26px;flex-wrap:wrap;}
+  .stat-tile{
+    background:rgba(0,0,0,0.3);border:1px solid rgba(255,215,0,0.3);border-radius:14px;
+    padding:14px 22px;text-align:center;min-width:130px;
+  }
+  .stat-tile .stat-num{font-family:'Orbitron',sans-serif;font-size:24px;font-weight:800;color:var(--neon-gold);text-shadow:0 0 10px rgba(255,215,0,0.5);}
+  .stat-tile .stat-lbl{font-size:12px;color:#c9b8ef;margin-top:2px;}
   .details-grid{display:grid;grid-template-columns:1fr;gap:16px;}
   .detail-row{display:flex;align-items:flex-start;gap:14px;}
   .detail-icon{
@@ -127,11 +144,9 @@
     background:transparent;border:1.5px solid var(--neon-cyan);color:var(--neon-cyan);
     box-shadow:0 0 12px rgba(0,240,255,0.25);
   }
-  .theme-note{text-align:center;font-size:15px;color:#e6d9ff;line-height:1.8;}
-  .theme-note b{color:var(--neon-pink);}
-  .gift-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-top:24px;}
+  .gift-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;margin-top:20px;position:relative;z-index:1;}
   .gift-card{
-    background:rgba(0,0,0,0.3);border:1px solid rgba(0,240,255,0.3);
+    background:rgba(10,4,24,0.72);border:1px solid rgba(0,240,255,0.3);
     border-radius:16px;padding:16px;text-align:center;
     box-shadow:0 0 16px rgba(0,240,255,0.12);
     display:flex;flex-direction:column;gap:8px;align-items:center;
@@ -141,23 +156,55 @@
   .gift-card .emoji{font-size:30px;}
   .gift-card .gname{font-weight:600;font-size:14px;color:#fff;}
   .gift-card a.gift-link{
+    font-size:12px;color:var(--neon-cyan);text-decoration:underline;
+  }
+  .gift-card button.pick-btn{
     margin-top:auto;font-size:13px;color:var(--bg-deep);background:var(--neon-gold);
-    padding:7px 14px;border-radius:999px;text-decoration:none;font-weight:700;
+    padding:7px 14px;border-radius:999px;border:none;font-weight:700;cursor:pointer;
     box-shadow:0 0 12px rgba(255,215,0,0.5);
   }
   .gift-card .claimed-tag{
     font-size:12px;color:var(--neon-pink);font-weight:600;background:rgba(255,46,224,0.12);
     padding:4px 10px;border-radius:999px;
   }
+  #gift-fab{
+    position:fixed;bottom:22px;right:22px;z-index:500;
+    background:linear-gradient(90deg,var(--neon-pink),var(--neon-purple));
+    color:#fff;border:none;border-radius:999px;padding:14px 22px;font-weight:700;font-size:14px;
+    box-shadow:0 0 22px rgba(255,46,224,0.7);cursor:pointer;
+    animation:fabPulse 2.2s ease-in-out infinite;
+    font-family:'Poppins',sans-serif;
+  }
+  @keyframes fabPulse{
+    0%,100%{box-shadow:0 0 18px rgba(255,46,224,0.6);}
+    50%{box-shadow:0 0 30px rgba(255,46,224,0.95);}
+  }
+  #gift-modal-overlay{
+    display:none;position:fixed;inset:0;z-index:1000;
+    background:rgba(5,1,14,0.82);backdrop-filter:blur(3px);
+    align-items:flex-start;justify-content:center;overflow-y:auto;padding:40px 16px;
+  }
+  #gift-modal-overlay.open{display:flex;}
+  .gift-modal{
+    position:relative;max-width:640px;width:100%;border-radius:22px;overflow:hidden;
+    border:1px solid rgba(255,46,224,0.4);box-shadow:0 0 50px rgba(166,59,255,0.4);
+    background:linear-gradient(160deg,#150733 0%, #23093f 60%, #2d0a4a 100%);
+  }
+  .gift-modal-glow{position:absolute;inset:0;z-index:0;opacity:0.55;}
+  .gift-modal-inner{position:relative;z-index:1;padding:26px 24px 30px;}
+  .gift-modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+  .gift-modal-header h3{font-size:20px;color:#fff;text-shadow:0 0 12px rgba(255,46,224,0.6);}
+  .gift-modal-close{
+    background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.25);color:#fff;
+    border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:16px;
+  }
   form{display:flex;flex-direction:column;gap:16px;margin-top:20px;}
   .field label{font-size:13px;color:var(--neon-gold);font-weight:600;display:block;margin-bottom:6px;letter-spacing:0.5px;}
-  .field input,.field textarea,.field select{
+  .field input,.field textarea{
     width:100%;padding:12px 14px;border-radius:10px;border:1px solid rgba(255,255,255,0.25);
     background:rgba(0,0,0,0.35);color:#fff;font-family:'Poppins',sans-serif;font-size:15px;
   }
-  .field select option{background:#1a0b2e;color:#fff;}
-  .field select option:disabled{color:#777;}
-  .field input:focus,.field textarea:focus,.field select:focus{outline:none;border-color:var(--neon-pink);box-shadow:0 0 10px rgba(255,46,224,0.4);}
+  .field input:focus,.field textarea:focus{outline:none;border-color:var(--neon-pink);box-shadow:0 0 10px rgba(255,46,224,0.4);}
   .radio-group{display:flex;gap:10px;flex-wrap:wrap;}
   .radio-pill{
     border:1px solid rgba(255,255,255,0.25);border-radius:999px;padding:8px 18px;
@@ -166,8 +213,25 @@
   .radio-pill.active{background:var(--neon-pink);border-color:var(--neon-pink);box-shadow:0 0 12px rgba(255,46,224,0.6);}
   .error-text{color:#ff6b6b;font-size:13px;display:none;}
   .info-text{color:#8fd8ff;font-size:12px;margin-top:-6px;}
+  .gift-chosen-chip{
+    display:inline-flex;align-items:center;gap:10px;background:rgba(255,215,0,0.1);
+    border:1px solid rgba(255,215,0,0.4);border-radius:999px;padding:8px 16px;font-size:14px;color:#ffe9a8;
+  }
+  .gift-chosen-chip button{background:none;border:none;color:#ff9d9d;cursor:pointer;font-size:13px;text-decoration:underline;}
+  .wall-list{display:flex;flex-direction:column;gap:10px;margin-top:20px;max-height:320px;overflow-y:auto;}
+  .wall-item{
+    background:rgba(0,0,0,0.3);border:1px solid rgba(166,59,255,0.3);border-radius:14px;
+    padding:12px 16px;font-size:14px;color:#e6d9ff;
+  }
+  .wall-item .wname{font-weight:600;color:var(--neon-gold);}
+  .wall-empty{text-align:center;color:#8a7aa8;font-size:14px;}
   .footer-note{text-align:center;color:#8a7aa8;font-size:13px;margin-top:40px;line-height:1.8;}
   .footer-note .heart{color:var(--neon-pink);}
+  .confetti-piece{position:fixed;top:-10px;z-index:2000;pointer-events:none;border-radius:2px;}
+  @keyframes confettiFall{
+    0%{transform:translateY(0) rotate(0deg);opacity:1;}
+    100%{transform:translateY(100vh) rotate(540deg);opacity:0;}
+  }
   @media (min-width:520px){
     .details-grid{grid-template-columns:1fr 1fr;}
   }
@@ -185,7 +249,6 @@
     <div class="badge-row">
       <div class="badge">🎂 Turning 5</div>
       <div class="badge">🎤 K-Pop Demon Hunter Theme</div>
-      <div class="badge">🎉 Costumes encouraged</div>
     </div>
   </div>
 
@@ -198,6 +261,10 @@
         <div class="cd-box"><div class="num" id="cd-hours">--</div><div class="lbl">Hours</div></div>
         <div class="cd-box"><div class="num" id="cd-mins">--</div><div class="lbl">Mins</div></div>
         <div class="cd-box"><div class="num" id="cd-secs">--</div><div class="lbl">Secs</div></div>
+      </div>
+      <div class="stats-row">
+        <div class="stat-tile"><div class="stat-num" id="stat-guests">0</div><div class="stat-lbl">Guests confirmed</div></div>
+        <div class="stat-tile"><div class="stat-num" id="stat-gifts">0 / 15</div><div class="stat-lbl">Gifts claimed</div></div>
       </div>
     </div>
   </section>
@@ -270,11 +337,11 @@
           <input type="number" id="rsvp-kids" min="0" value="0">
         </div>
         <div class="field" id="gift-field">
-          <label for="rsvp-gift">Which gift will you bring?*</label>
-          <select id="rsvp-gift">
-            <option value="">-- Select a gift --</option>
-          </select>
-          <div class="info-text">Required if you're attending — this locks the gift so no one else brings the same one.</div>
+          <label>Gift you'll bring*</label>
+          <div id="gift-chip-area">
+            <button type="button" class="btn btn-outline" onclick="openGiftModal()">🎁 Pick a gift</button>
+          </div>
+          <div class="info-text">Opens gift suggestions — picking one reserves it just for you.</div>
           <div class="error-text" id="err-gift">Pick a gift so it can be reserved for you</div>
         </div>
         <div class="field">
@@ -286,11 +353,13 @@
     </div>
   </section>
 
-  <section id="gifts-section">
+  <section id="wall-section">
     <div class="card">
-      <div class="section-title">Gift ideas</div>
-      <div class="section-sub">Pick one in the RSVP form above and it's reserved just for you — once claimed, it's locked and won't show as available to anyone else.</div>
-      <div class="gift-grid" id="gift-grid"></div>
+      <div class="section-title">Messages for Aura</div>
+      <div class="section-sub">Notes from everyone who's RSVP'd</div>
+      <div class="wall-list" id="wall-list">
+        <div class="wall-empty">No messages yet — be the first!</div>
+      </div>
     </div>
   </section>
 
@@ -300,16 +369,58 @@
 
 </div>
 
+<button id="gift-fab" onclick="openGiftModal()">🎁 Gift suggestions</button>
+
+<div id="gift-modal-overlay" onclick="if(event.target===this) closeGiftModal()">
+  <div class="gift-modal">
+    <svg class="gift-modal-glow" viewBox="0 0 640 420" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <radialGradient id="g1" cx="50%" cy="30%" r="70%">
+          <stop offset="0%" stop-color="#ff2ee0" stop-opacity="0.55"/>
+          <stop offset="100%" stop-color="#ff2ee0" stop-opacity="0"/>
+        </radialGradient>
+        <radialGradient id="g2" cx="20%" cy="70%" r="60%">
+          <stop offset="0%" stop-color="#00f0ff" stop-opacity="0.4"/>
+          <stop offset="100%" stop-color="#00f0ff" stop-opacity="0"/>
+        </radialGradient>
+        <radialGradient id="g3" cx="80%" cy="75%" r="60%">
+          <stop offset="0%" stop-color="#a63bff" stop-opacity="0.5"/>
+          <stop offset="100%" stop-color="#a63bff" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <rect width="640" height="420" fill="url(#g1)"/>
+      <rect width="640" height="420" fill="url(#g2)"/>
+      <rect width="640" height="420" fill="url(#g3)"/>
+      <g opacity="0.5" fill="none" stroke-linecap="round">
+        <path d="M170 380 Q150 260 190 190 Q205 150 190 100" stroke="#ff2ee0" stroke-width="14"/>
+        <circle cx="188" cy="80" r="22" fill="#ff2ee0"/>
+        <path d="M320 390 Q300 250 330 170 Q345 120 330 70" stroke="#00f0ff" stroke-width="14"/>
+        <circle cx="330" cy="52" r="24" fill="#00f0ff"/>
+        <path d="M470 380 Q450 260 490 190 Q505 150 490 100" stroke="#a63bff" stroke-width="14"/>
+        <circle cx="488" cy="80" r="22" fill="#a63bff"/>
+      </g>
+    </svg>
+    <div class="gift-modal-inner">
+      <div class="gift-modal-header">
+        <h3>Gift suggestions</h3>
+        <button class="gift-modal-close" onclick="closeGiftModal()" aria-label="Close">✕</button>
+      </div>
+      <div class="section-sub" style="margin-bottom:8px;">Pick one and it locks for you — no one else can bring the same gift.</div>
+      <div class="gift-grid" id="gift-grid"></div>
+    </div>
+  </div>
+</div>
+
 <!--
   =====================================================================
-  OPTIONAL: real-time gift locking across ALL guests (recommended)
+  OPTIONAL: real-time sync across ALL guests (recommended)
   =====================================================================
-  Right now gift claims are only remembered on each guest's own device
-  (localStorage), so two guests on different phones could still pick
-  the same gift without seeing each other's choice.
+  Right now gift claims, the guest/gift stats, and the message wall are
+  only remembered on each guest's own device (localStorage). Two guests
+  on different phones won't see each other's picks or messages live.
 
-  To make locking truly live across every guest, set up a free Firebase
-  Realtime Database (~10 min, no credit card):
+  To make everything sync live across every guest, set up a free
+  Firebase Realtime Database (~10 min, no credit card):
     1. Go to https://console.firebase.google.com -> Add project
     2. In the project, go to Build > Realtime Database -> Create Database
        -> start in "test mode" (fine for this low-stakes use case)
@@ -317,9 +428,10 @@
        -> register app -> copy the firebaseConfig object
     4. Paste that object into FIREBASE_CONFIG below, replacing null
     5. In Realtime Database > Rules, set:
-         { "rules": { "gifts": { ".read": true, ".write": true } } }
+         { "rules": { "gifts": { ".read": true, ".write": true },
+                      "rsvps": { ".read": true, ".write": true } } }
   Once FIREBASE_CONFIG is filled in, this file automatically switches
-  from local-only claiming to live, atomic, cross-guest locking.
+  from local-only to live, atomic, cross-guest sync.
   =====================================================================
 -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -329,7 +441,7 @@
 const WHATSAPP_NUMBER = "918928129792"; // host's WhatsApp number with country code, no + or spaces
 const EVENT_DATETIME_ISO = "2026-09-26T19:00:00"; // 7:00 PM, Sep 26 2026
 
-const FIREBASE_CONFIG = null; // <-- paste your firebaseConfig object here to enable live cross-guest locking (see comment above)
+const FIREBASE_CONFIG = null; // <-- paste your firebaseConfig object here to enable live cross-guest sync (see comment above)
 
 const GIFTS = [
   { id: "B0G1Z4RYT2", name: "VEBETO RC Drift Car", emoji: "🚗", link: "https://www.amazon.in/VEBETO-Control-Warranty-Omni-Directional-Rotation/dp/B0G1Z4RYT2" },
@@ -356,22 +468,18 @@ if (FIREBASE_CONFIG) {
   fbDb = firebase.database();
 }
 
-let claims = {}; // id -> claimedBy name
+let claims = {};       // giftId -> claimedBy name
+let rsvps = {};        // key -> { name, attending, guests, giftId, giftName, message }
+let selectedGiftId = null;
 
-function loadLocalClaims() {
-  try { return JSON.parse(localStorage.getItem('auraGiftClaims') || '{}'); } catch (e) { return {}; }
+function loadLocal(key, fallback) {
+  try { return JSON.parse(localStorage.getItem(key) || JSON.stringify(fallback)); } catch (e) { return fallback; }
 }
-function saveLocalClaims() {
-  localStorage.setItem('auraGiftClaims', JSON.stringify(claims));
-}
+function saveLocal(key, val) { localStorage.setItem(key, JSON.stringify(val)); }
 
 function renderGifts() {
   const giftGrid = document.getElementById('gift-grid');
-  const giftSelect = document.getElementById('rsvp-gift');
   giftGrid.innerHTML = '';
-  const currentSelectVal = giftSelect.value;
-  giftSelect.innerHTML = '<option value="">-- Select a gift --</option>';
-
   GIFTS.forEach((g) => {
     const claimedBy = claims[g.id];
     const card = document.createElement('div');
@@ -379,25 +487,47 @@ function renderGifts() {
     card.innerHTML = `
       <div class="emoji">${g.emoji}</div>
       <div class="gname">${g.name}</div>
+      <a class="gift-link" href="${g.link}" target="_blank">View on Amazon</a>
       ${claimedBy
         ? `<div class="claimed-tag">Claimed by ${claimedBy}</div>`
-        : `<a class="gift-link" href="${g.link}" target="_blank">View on Amazon</a>`}
+        : `<button type="button" class="pick-btn" onclick="pickGift('${g.id}')">I'll bring this</button>`}
     `;
     giftGrid.appendChild(card);
-
-    const opt = document.createElement('option');
-    opt.value = g.id;
-    opt.textContent = claimedBy ? `${g.name} (already claimed)` : g.name;
-    if (claimedBy) opt.disabled = true;
-    giftSelect.appendChild(opt);
   });
 
-  if ([...giftSelect.options].some(o => o.value === currentSelectVal && !o.disabled)) {
-    giftSelect.value = currentSelectVal;
+  const statGifts = document.getElementById('stat-gifts');
+  const claimedCount = Object.keys(claims).length;
+  statGifts.textContent = `${claimedCount} / ${GIFTS.length}`;
+}
+
+function renderGiftChip() {
+  const area = document.getElementById('gift-chip-area');
+  if (selectedGiftId) {
+    const g = GIFTS.find(x => x.id === selectedGiftId);
+    area.innerHTML = `<span class="gift-chosen-chip">🎁 ${g ? g.name : ''} <button type="button" onclick="openGiftModal()">change</button></span>`;
+  } else {
+    area.innerHTML = `<button type="button" class="btn btn-outline" onclick="openGiftModal()">🎁 Pick a gift</button>`;
   }
 }
 
-function initClaims() {
+function renderStats() {
+  const guestTotal = Object.values(rsvps)
+    .filter(r => r.attending)
+    .reduce((sum, r) => sum + (parseInt(r.guests) || 0), 0);
+  document.getElementById('stat-guests').textContent = guestTotal;
+}
+
+function renderWall() {
+  const wallList = document.getElementById('wall-list');
+  const entries = Object.values(rsvps).filter(r => r.message).sort((a, b) => (b.ts || 0) - (a.ts || 0));
+  if (!entries.length) {
+    wallList.innerHTML = '<div class="wall-empty">No messages yet — be the first!</div>';
+    return;
+  }
+  wallList.innerHTML = entries.map(r => `<div class="wall-item"><span class="wname">${r.name}</span>: ${r.message}</div>`).join('');
+}
+
+function initSync() {
   if (fbDb) {
     fbDb.ref('gifts').on('value', (snap) => {
       const data = snap.val() || {};
@@ -405,12 +535,20 @@ function initClaims() {
       Object.keys(data).forEach(id => { if (data[id] && data[id].claimedBy) claims[id] = data[id].claimedBy; });
       renderGifts();
     });
+    fbDb.ref('rsvps').on('value', (snap) => {
+      rsvps = snap.val() || {};
+      renderStats();
+      renderWall();
+    });
   } else {
-    claims = loadLocalClaims();
+    claims = loadLocal('auraGiftClaims', {});
+    rsvps = loadLocal('auraRSVPs', {});
     renderGifts();
+    renderStats();
+    renderWall();
   }
 }
-initClaims();
+initSync();
 
 // Sparkle background
 const sparkleContainer = document.getElementById('sparkles');
@@ -426,6 +564,27 @@ for (let i = 0; i < 40; i++) {
   s.style.animationDelay = (Math.random() * 3) + 's';
   sparkleContainer.appendChild(s);
 }
+
+// Cursor / touch glow trail
+let lastTrailTs = 0;
+function spawnGlowDot(x, y) {
+  const now = Date.now();
+  if (now - lastTrailTs < 35) return;
+  lastTrailTs = now;
+  const dot = document.createElement('div');
+  dot.className = 'glow-dot';
+  const size = Math.random() * 14 + 10;
+  dot.style.width = size + 'px';
+  dot.style.height = size + 'px';
+  dot.style.left = x + 'px';
+  dot.style.top = y + 'px';
+  document.body.appendChild(dot);
+  setTimeout(() => dot.remove(), 700);
+}
+window.addEventListener('mousemove', (e) => spawnGlowDot(e.clientX, e.clientY));
+window.addEventListener('touchmove', (e) => {
+  if (e.touches[0]) spawnGlowDot(e.touches[0].clientX, e.touches[0].clientY);
+}, { passive: true });
 
 // Countdown
 const eventDate = new Date(EVENT_DATETIME_ISO).getTime();
@@ -462,6 +621,20 @@ document.querySelectorAll('#attend-group .radio-pill').forEach(pill => {
   });
 });
 
+function openGiftModal() {
+  document.getElementById('gift-modal-overlay').classList.add('open');
+}
+function closeGiftModal() {
+  document.getElementById('gift-modal-overlay').classList.remove('open');
+}
+function pickGift(giftId) {
+  selectedGiftId = giftId;
+  renderGiftChip();
+  document.getElementById('err-gift').style.display = 'none';
+  closeGiftModal();
+}
+renderGiftChip();
+
 function claimGift(giftId, name) {
   if (fbDb) {
     return fbDb.ref('gifts/' + giftId).transaction((current) => {
@@ -471,9 +644,39 @@ function claimGift(giftId, name) {
   } else {
     if (claims[giftId]) return Promise.resolve(false);
     claims[giftId] = name;
-    saveLocalClaims();
+    saveLocal('auraGiftClaims', claims);
     renderGifts();
     return Promise.resolve(true);
+  }
+}
+
+function saveRSVP(record) {
+  if (fbDb) {
+    return fbDb.ref('rsvps').push(record);
+  } else {
+    const key = 'r' + Date.now();
+    rsvps[key] = record;
+    saveLocal('auraRSVPs', rsvps);
+    renderStats();
+    renderWall();
+    return Promise.resolve();
+  }
+}
+
+function burstConfetti() {
+  const colors = ['#ff2ee0', '#a63bff', '#ffd700', '#00f0ff'];
+  for (let i = 0; i < 60; i++) {
+    const piece = document.createElement('div');
+    piece.className = 'confetti-piece';
+    const size = Math.random() * 8 + 6;
+    piece.style.width = size + 'px';
+    piece.style.height = size * 0.4 + 'px';
+    piece.style.left = Math.random() * 100 + 'vw';
+    piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+    const duration = Math.random() * 1.5 + 1.8;
+    piece.style.animation = `confettiFall ${duration}s ease-in forwards`;
+    document.body.appendChild(piece);
+    setTimeout(() => piece.remove(), duration * 1000 + 100);
   }
 }
 
@@ -482,9 +685,8 @@ function handleRSVP(e) {
   const name = document.getElementById('rsvp-name').value.trim();
   const guests = document.getElementById('rsvp-guests').value;
   const kids = document.getElementById('rsvp-kids').value;
-  const giftId = document.getElementById('rsvp-gift').value;
   const msg = document.getElementById('rsvp-msg').value.trim();
-  const gift = GIFTS.find(g => g.id === giftId);
+  const gift = GIFTS.find(g => g.id === selectedGiftId);
 
   let valid = true;
   if (!name) {
@@ -498,7 +700,8 @@ function handleRSVP(e) {
     valid = false;
   }
   const isAttending = selectedAttend === "Yes, we'll be there!";
-  if (isAttending && !giftId) {
+  if (isAttending && !selectedGiftId) {
+    document.getElementById('err-gift').textContent = 'Pick a gift so it can be reserved for you';
     document.getElementById('err-gift').style.display = 'block';
     valid = false;
   } else {
@@ -507,22 +710,28 @@ function handleRSVP(e) {
   if (!valid) return false;
 
   const proceed = () => {
+    saveRSVP({
+      name, attending: isAttending, guests: parseInt(guests) || 1, kids: parseInt(kids) || 0,
+      giftId: selectedGiftId || null, giftName: gift ? gift.name : null, message: msg || null, ts: Date.now()
+    });
     let text = `Hi! RSVP for Aura's 5th Birthday Bash 🎉\n\nName: ${name}\nResponse: ${selectedAttend}\nGuests: ${guests} (Kids: ${kids})`;
     if (gift) text += `\nBringing gift: ${gift.name}`;
     if (msg) text += `\nMessage: ${msg}`;
     const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`;
     window.open(url, '_blank');
+    burstConfetti();
   };
 
-  if (isAttending && giftId) {
-    claimGift(giftId, name).then((success) => {
+  if (isAttending && selectedGiftId) {
+    claimGift(selectedGiftId, name).then((success) => {
       if (!success) {
         document.getElementById('err-gift').textContent = 'That gift was just claimed by someone else — pick another';
         document.getElementById('err-gift').style.display = 'block';
+        selectedGiftId = null;
+        renderGiftChip();
         renderGifts();
         return;
       }
-      document.getElementById('err-gift').textContent = 'Pick a gift so it can be reserved for you';
       proceed();
     });
   } else {
