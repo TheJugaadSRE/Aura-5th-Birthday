@@ -805,8 +805,13 @@ function handleRSVP(e) {
     let text = `Hi! RSVP for Aura's 5th Birthday Bash 🎉\n\nName: ${name}\nResponse: ${selectedAttend}\nGuests: ${guests} (Kids: ${kids})`;
     if (gift) text += `\nBringing gift: ${gift.name}`;
     if (msg) text += `\nMessage: ${msg}`;
-    const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`;
-    window.open(url, '_blank');
+    const encodedText = encodeURIComponent(text);
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    if (isMobile) {
+      window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodedText}`, '_blank');
+    } else {
+      window.location.href = `whatsapp://send?phone=${WHATSAPP_NUMBER}&text=${encodedText}`;
+    }
     burstConfetti();
   };
 
