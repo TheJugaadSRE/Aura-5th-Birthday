@@ -55,15 +55,17 @@
   .hero{
     text-align:center;padding:64px 0 40px;position:relative;overflow:hidden;
     border-radius:24px;
+    min-height:92vh;display:flex;flex-direction:column;justify-content:center;
+    margin:0 -20px;padding-left:20px;padding-right:20px;
   }
   .hero::before{
     content:'';position:absolute;inset:0;z-index:0;
-    background-image:url('hunters-3.jpg');background-size:cover;background-position:center top;
-    filter:saturate(1.3);opacity:0.4;
+    background-image:url('hunters-3.jpg');background-size:cover;background-position:center 15%;
+    filter:saturate(1.35);opacity:0.75;
   }
   .hero::after{
     content:'';position:absolute;inset:0;z-index:0;
-    background:linear-gradient(180deg, rgba(13,2,33,0.25) 0%, rgba(13,2,33,0.75) 55%, var(--bg-deep) 92%);
+    background:linear-gradient(180deg, rgba(13,2,33,0.1) 0%, rgba(13,2,33,0.55) 60%, var(--bg-deep) 96%);
   }
   .hero > *{position:relative;z-index:1;}
   .hero .invite-label{
@@ -192,6 +194,13 @@
     0%,100%{box-shadow:0 0 18px rgba(255,46,224,0.6);}
     50%{box-shadow:0 0 30px rgba(255,46,224,0.95);}
   }
+  #music-fab{
+    position:fixed;bottom:22px;left:22px;z-index:500;
+    background:rgba(0,0,0,0.5);color:#fff;border:1.5px solid var(--neon-cyan);
+    border-radius:999px;padding:12px 18px;font-weight:600;font-size:13px;
+    box-shadow:0 0 16px rgba(0,240,255,0.35);cursor:pointer;
+    font-family:'Poppins',sans-serif;backdrop-filter:blur(4px);
+  }
   #gift-modal-overlay{
     display:none;position:fixed;inset:0;z-index:1000;
     background:rgba(5,1,14,0.82);backdrop-filter:blur(3px);
@@ -266,7 +275,6 @@
     <div class="tagline">A <b>K-Pop Demon Hunter</b> birthday bash — glitter, glow sticks and a little bit of demon-slaying magic ✨🎤👹</div>
     <div class="badge-row">
       <div class="badge">🎂 Turning 5</div>
-      <div class="badge">🎤 K-Pop Demon Hunter Theme</div>
     </div>
   </div>
 
@@ -388,6 +396,8 @@
 </div>
 
 <button id="gift-fab" onclick="openGiftModal()">🎁 Gift suggestions</button>
+<button id="music-fab" onclick="toggleMusic()">🔊 Aura says hi</button>
+<audio id="bg-audio" src="aura-voice.m4a" loop preload="auto"></audio>
 
 <div id="gift-modal-overlay" onclick="if(event.target===this) closeGiftModal()">
   <div class="gift-modal">
@@ -596,6 +606,38 @@ window.addEventListener('mousemove', (e) => spawnGlowDot(e.clientX, e.clientY));
 window.addEventListener('touchmove', (e) => {
   if (e.touches[0]) spawnGlowDot(e.touches[0].clientX, e.touches[0].clientY);
 }, { passive: true });
+
+// Background audio: try autoplay, fall back to first user interaction
+const bgAudio = document.getElementById('bg-audio');
+const musicFab = document.getElementById('music-fab');
+let musicStarted = false;
+let musicMuted = false;
+
+function updateMusicFabLabel() {
+  musicFab.textContent = musicMuted ? '🔇 Play Aura\'s voice' : '🔊 Aura says hi';
+}
+
+function startMusic() {
+  if (musicStarted) return;
+  musicStarted = true;
+  bgAudio.play().catch(() => { musicStarted = false; });
+}
+
+function toggleMusic() {
+  if (!musicStarted) {
+    startMusic();
+    musicMuted = false;
+  } else {
+    musicMuted = !musicMuted;
+    bgAudio.muted = musicMuted;
+  }
+  updateMusicFabLabel();
+}
+
+startMusic();
+['click', 'touchstart', 'scroll', 'keydown'].forEach(evt => {
+  window.addEventListener(evt, startMusic, { once: true, passive: true });
+});
 
 // Countdown
 const eventDate = new Date(EVENT_DATETIME_ISO).getTime();
