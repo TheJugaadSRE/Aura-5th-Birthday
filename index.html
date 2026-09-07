@@ -385,15 +385,15 @@
           </div>
           <div class="error-text" id="err-attend">Pick one option</div>
         </div>
-        <div class="field">
+        <div class="field" id="guests-field" style="display:none;">
           <label for="rsvp-guests">Number of guests (incl. you)</label>
           <input type="number" id="rsvp-guests" min="1" value="1">
         </div>
-        <div class="field">
+        <div class="field" id="kids-field" style="display:none;">
           <label for="rsvp-kids">Number of kids among them</label>
           <input type="number" id="rsvp-kids" min="0" value="0">
         </div>
-        <div class="field" id="gift-field">
+        <div class="field" id="gift-field" style="display:none;">
           <label>Gift Suggestion*</label>
           <div id="gift-chip-area">
             <button type="button" class="btn btn-outline" onclick="openGiftModal()">🎁 Pick a gift</button>
@@ -731,6 +731,13 @@ document.querySelectorAll('#attend-group .radio-pill').forEach(pill => {
     pill.classList.add('active');
     selectedAttend = pill.dataset.val;
     document.getElementById('err-attend').style.display = 'none';
+    const attending = selectedAttend === "Yes, we'll be there!";
+    document.getElementById('guests-field').style.display = attending ? '' : 'none';
+    document.getElementById('kids-field').style.display = attending ? '' : 'none';
+    document.getElementById('gift-field').style.display = attending ? '' : 'none';
+    if (!attending) {
+      document.getElementById('err-gift').style.display = 'none';
+    }
   });
 });
 
