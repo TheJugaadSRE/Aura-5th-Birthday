@@ -459,6 +459,7 @@
       </div>
       <div class="section-sub" style="margin-bottom:8px;">Pick one and it locks for you — no one else can bring the same gift.</div>
       <div class="gift-grid" id="gift-grid"></div>
+      <div id="admin-reset-area"></div>
     </div>
   </div>
 </div>
@@ -609,6 +610,26 @@ function initSync() {
   }
 }
 initSync();
+
+function resetAllData() {
+  if (!confirm('Reset all RSVPs, gift claims, and messages? This cannot be undone.')) return;
+  if (fbDb) {
+    fbDb.ref('gifts').remove();
+    fbDb.ref('rsvps').remove();
+  }
+  localStorage.removeItem('auraGiftClaims');
+  localStorage.removeItem('auraRSVPs');
+  claims = {};
+  rsvps = {};
+  renderGifts();
+  renderStats();
+  renderWall();
+}
+
+if (isAdmin) {
+  document.getElementById('admin-reset-area').innerHTML =
+    '<button type="button" class="btn btn-outline" style="margin-top:16px;border-color:#ff6b6b;color:#ff6b6b;" onclick="resetAllData()">🗑 Admin: reset all test data</button>';
+}
 
 // Sparkle background
 const sparkleContainer = document.getElementById('sparkles');
