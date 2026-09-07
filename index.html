@@ -55,7 +55,7 @@
   .hero{
     text-align:center;padding:48px 0 28px;position:relative;overflow:hidden;
     border-radius:24px;
-    min-height:92vh;display:flex;flex-direction:column;justify-content:center;
+    min-height:92vh;display:flex;flex-direction:column;justify-content:flex-end;
     margin:0 -20px;padding-left:20px;padding-right:20px;
   }
   .hero::before{
@@ -75,7 +75,7 @@
     text-shadow:0 0 8px var(--neon-cyan);font-weight:600;margin-bottom:18px;
   }
   .hero h1{
-    font-size:clamp(60px,18vw,140px);
+    font-size:clamp(56px,15vw,112px);
     font-weight:900;
     background:linear-gradient(90deg,#ffffff,var(--neon-pink),var(--neon-gold),#ffffff);
     -webkit-background-clip:text;background-clip:text;color:transparent;
@@ -130,10 +130,10 @@
   .countdown{display:flex;justify-content:center;gap:14px;margin:32px 0;flex-wrap:wrap;}
   .cd-box{
     background:rgba(0,0,0,0.35);border:1px solid var(--neon-purple);
-    border-radius:14px;padding:14px 10px;min-width:72px;text-align:center;
+    border-radius:14px;padding:14px 14px;min-width:84px;text-align:center;
     box-shadow:0 0 16px rgba(166,59,255,0.4);
   }
-  .cd-box .num{font-family:'Orbitron',sans-serif;font-size:28px;font-weight:800;color:var(--neon-cyan);text-shadow:0 0 10px var(--neon-cyan);}
+  .cd-box .num{font-family:'Orbitron',sans-serif;font-size:38px;font-weight:800;color:var(--neon-cyan);text-shadow:0 0 10px var(--neon-cyan);}
   .cd-box .lbl{font-size:11px;color:#c9b8ef;letter-spacing:1px;text-transform:uppercase;margin-top:2px;}
   .stats-row{display:flex;justify-content:center;gap:16px;margin-top:26px;flex-wrap:wrap;}
   .stat-tile{
@@ -278,14 +278,20 @@
     .details-grid{grid-template-columns:1fr 1fr;}
   }
   @media (min-width:701px){
-    section{padding:28px 0;}
+    section{padding:20px 0;}
     .hero{
       width:100vw;position:relative;left:50%;transform:translateX(-50%);
-      margin:0;padding:28px 40px 12px;
-      min-height:unset;aspect-ratio:16/9;max-height:52vh;
+      margin:0;padding:24px 40px 32px;
+      min-height:unset;aspect-ratio:16/9;max-height:66vh;
     }
-    .hero::before{background-position:center 5%;}
-    .badge-row{margin-top:12px;}
+    .hero::before{background-position:center 8%;}
+    .hero .tagline{margin-top:10px;}
+    .hero .nickname{margin-top:2px;}
+    .badge-row{margin-top:10px;}
+    .badge{padding:8px 22px;}
+    .countdown{margin:18px 0;}
+    .stats-row{margin-top:16px;}
+    .section-sub{margin-bottom:14px;}
   }
 </style>
 </head>
