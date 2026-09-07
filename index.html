@@ -496,7 +496,7 @@ const EVENT_DATETIME_ISO = "2026-09-26T19:00:00"; // 7:00 PM, Sep 26 2026
 const FIREBASE_CONFIG = null; // <-- paste your firebaseConfig object here to enable live cross-guest sync (see comment above)
 
 const GIFTS = [
-  { id: "SURPRISE", name: "Others & Surprise Me", emoji: "🎉", link: null },
+  { id: "SURPRISE", name: "I'll Surprise You", emoji: "🎉", link: null },
   { id: "B0G1Z4RYT2", name: "VEBETO RC Drift Car", emoji: "🚗", link: "https://www.amazon.in/VEBETO-Control-Warranty-Omni-Directional-Rotation/dp/B0G1Z4RYT2" },
   { id: "B0DH22K477", name: "PepPlay Doodle Unicorn", emoji: "🦄", link: "https://www.amazon.in/dp/B0DH22K477" },
   { id: "B0DJH1VMZP", name: "Chanak Play Dough Set", emoji: "🍦", link: "https://www.amazon.in/dp/B0DJH1VMZP" },
@@ -511,7 +511,8 @@ const GIFTS = [
   { id: "B0BN3KP555", name: "Skillmatics Floor Puzzle", emoji: "🧩", link: "https://www.amazon.in/dp/B0BN3KP555" },
   { id: "B0F21PWQ79", name: "Gooyo Notebook Computer Toy", emoji: "💻", link: "https://www.amazon.in/dp/B0F21PWQ79" },
   { id: "B0GQSXNNS4", name: "Gift Option 14", emoji: "🎁", link: "https://www.amazon.in/dp/B0GQSXNNS4" },
-  { id: "B0GVKLXDZJ", name: "Gift Option 15", emoji: "🎁", link: "https://www.amazon.in/dp/B0GVKLXDZJ" }
+  { id: "B0GVKLXDZJ", name: "Gift Option 15", emoji: "🎁", link: "https://www.amazon.in/dp/B0GVKLXDZJ" },
+  { id: "OTHERS", name: "Others", emoji: "🎁", link: null }
 ];
 // ======================================================
 
@@ -722,7 +723,7 @@ function pickGift(giftId) {
 renderGiftChip();
 
 function claimGift(giftId, name) {
-  if (giftId === 'SURPRISE') return Promise.resolve(true); // not a unique item, never locks
+  if (giftId === 'SURPRISE' || giftId === 'OTHERS') return Promise.resolve(true); // not a unique item, never locks
   if (fbDb) {
     return fbDb.ref('gifts/' + giftId).transaction((current) => {
       if (current && current.claimedBy) return; // abort, already taken
