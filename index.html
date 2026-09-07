@@ -174,6 +174,12 @@
     background:transparent;border:1.5px solid var(--neon-cyan);color:var(--neon-cyan);
     box-shadow:0 0 12px rgba(0,240,255,0.25);
   }
+  .photo-strip{display:flex;gap:16px;overflow-x:auto;padding:10px 4px 16px;-webkit-overflow-scrolling:touch;}
+  .photo-circle{
+    flex:0 0 auto;width:110px;height:110px;border-radius:50%;overflow:hidden;
+    border:3px solid var(--neon-gold);box-shadow:0 0 16px rgba(255,215,0,0.5);
+  }
+  .photo-circle img{width:100%;height:100%;object-fit:cover;display:block;}
   .gift-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;margin-top:20px;position:relative;z-index:1;}
   .gift-card{
     background:rgba(10,4,24,0.72);border:1px solid rgba(0,240,255,0.3);
@@ -363,6 +369,23 @@
       <div class="btn-row">
         <button class="btn btn-outline" onclick="downloadICS()">📆 Add to calendar</button>
         <a class="btn btn-outline" href="https://www.google.com/maps/place/VTP+Beaumonde+T3/@18.540314,73.981767,17z/data=!3m1!4b1!4m6!3m5!1s0x3bc2c3003ef7623d:0xdb6e412dc7969b0f!8m2!3d18.540314!4d73.9843419!16s%2Fg%2F11w7s5c8p1?entry=ttu&g_ep=EgoyMDI2MDkwMi4wIKXMDSoASAFQAw%3D%3D" target="_blank">📍 Directions</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="throwback-section">
+    <div class="card">
+      <div class="section-title">Through the years</div>
+      <div class="section-sub">A little look back before the big day</div>
+      <div class="photo-strip">
+        <div class="photo-circle"><img src="photos/aura-1.jpg" alt="Aura as a baby" loading="lazy"></div>
+        <div class="photo-circle"><img src="photos/aura-2.jpg" alt="Aura as a baby" loading="lazy"></div>
+        <div class="photo-circle"><img src="photos/aura-3.jpg" alt="Aura as a baby" loading="lazy"></div>
+        <div class="photo-circle"><img src="photos/aura-4.jpg" alt="Aura dressed as Krishna" loading="lazy"></div>
+        <div class="photo-circle"><img src="photos/aura-5.jpg" alt="Aura at the beach" loading="lazy"></div>
+        <div class="photo-circle"><img src="photos/aura-6.jpg" alt="Aura dressed up" loading="lazy"></div>
+        <div class="photo-circle"><img src="photos/aura-7.jpg" alt="Aura painting" loading="lazy"></div>
+        <div class="photo-circle"><img src="photos/aura-8.jpg" alt="Aura smiling with her craft" loading="lazy"></div>
       </div>
     </div>
   </section>
