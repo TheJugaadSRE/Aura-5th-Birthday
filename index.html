@@ -53,7 +53,7 @@
   section{padding:56px 0;}
   h1,h2,h3{font-family:'Orbitron',sans-serif;}
   .hero{
-    text-align:center;padding:64px 0 40px;position:relative;overflow:hidden;
+    text-align:center;padding:48px 0 28px;position:relative;overflow:hidden;
     border-radius:24px;
     min-height:92vh;display:flex;flex-direction:column;justify-content:center;
     margin:0 -20px;padding-left:20px;padding-right:20px;
@@ -65,7 +65,9 @@
   }
   .hero::after{
     content:'';position:absolute;inset:0;z-index:0;
-    background:linear-gradient(180deg, rgba(13,2,33,0.1) 0%, rgba(13,2,33,0.55) 60%, var(--bg-deep) 96%);
+    background:
+      radial-gradient(ellipse 65% 45% at 50% 42%, rgba(13,2,33,0.6) 0%, rgba(13,2,33,0) 72%),
+      linear-gradient(180deg, rgba(13,2,33,0.1) 0%, rgba(13,2,33,0.55) 60%, var(--bg-deep) 96%);
   }
   .hero > *{position:relative;z-index:1;}
   .hero .invite-label{
@@ -73,17 +75,18 @@
     text-shadow:0 0 8px var(--neon-cyan);font-weight:600;margin-bottom:18px;
   }
   .hero h1{
-    font-size:clamp(48px,14vw,96px);
+    font-size:clamp(60px,18vw,140px);
     font-weight:900;
-    background:linear-gradient(90deg,var(--neon-pink),var(--neon-purple),var(--neon-gold));
+    background:linear-gradient(90deg,#ffffff,var(--neon-pink),var(--neon-gold),#ffffff);
     -webkit-background-clip:text;background-clip:text;color:transparent;
-    text-shadow:0 0 30px rgba(255,46,224,0.45);
+    -webkit-text-stroke:1.5px rgba(255,255,255,0.55);
+    text-shadow:0 0 18px rgba(255,255,255,0.6), 0 0 40px rgba(255,46,224,0.6);
     line-height:1;
     animation:pulseGlow 2.8s ease-in-out infinite;
   }
   @keyframes pulseGlow{
-    0%,100%{filter:drop-shadow(0 0 14px rgba(166,59,255,0.55));}
-    50%{filter:drop-shadow(0 0 28px rgba(255,46,224,0.85));}
+    0%,100%{filter:drop-shadow(0 0 16px rgba(255,255,255,0.5)) drop-shadow(0 0 20px rgba(166,59,255,0.55));}
+    50%{filter:drop-shadow(0 0 26px rgba(255,255,255,0.75)) drop-shadow(0 0 34px rgba(255,46,224,0.85));}
   }
   .hero .nickname{
     font-size:clamp(18px,5vw,26px);color:var(--neon-gold);
@@ -94,7 +97,7 @@
     margin-top:22px;font-size:clamp(16px,4vw,20px);color:#e6d9ff;font-weight:500;
   }
   .hero .tagline b{color:var(--neon-pink);}
-  .badge-row{display:flex;justify-content:center;gap:10px;margin-top:24px;flex-wrap:wrap;}
+  .badge-row{display:flex;justify-content:center;gap:10px;margin-top:20px;flex-wrap:wrap;}
   .badge{
     border:2px solid transparent;border-radius:999px;padding:10px 28px;
     font-family:'Orbitron',sans-serif;font-weight:800;font-size:clamp(20px,5vw,32px);
@@ -275,12 +278,14 @@
     .details-grid{grid-template-columns:1fr 1fr;}
   }
   @media (min-width:701px){
+    section{padding:28px 0;}
     .hero{
       width:100vw;position:relative;left:50%;transform:translateX(-50%);
-      margin:0;padding-left:40px;padding-right:40px;
-      min-height:unset;aspect-ratio:16/9;max-height:90vh;
+      margin:0;padding:28px 40px 12px;
+      min-height:unset;aspect-ratio:16/9;max-height:52vh;
     }
     .hero::before{background-position:center center;}
+    .badge-row{margin-top:12px;}
   }
 </style>
 </head>
@@ -291,10 +296,10 @@
   <div class="hero">
     <div class="invite-label">✦ YOU ARE INVITED ✦</div>
     <h1>AURA</h1>
-    <div class="nickname">AKA SKY · TURNS 5!</div>
+    <div class="nickname">AKA SKY - Turns 5</div>
     <div class="tagline">A <b>K-Pop Demon Hunter</b> birthday bash — glitter, glow sticks and a little bit of demon-slaying magic ✨🎤👹</div>
     <div class="badge-row">
-      <div class="badge">🎂 Turning 5</div>
+      <div class="badge">🎂 5th Birthday Bash</div>
     </div>
   </div>
 
