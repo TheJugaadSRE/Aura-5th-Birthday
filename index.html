@@ -327,7 +327,7 @@
       </div>
       <div class="stats-row">
         <div class="stat-tile"><div class="stat-num" id="stat-guests">0</div><div class="stat-lbl">Guests confirmed</div></div>
-        <div class="stat-tile"><div class="stat-num" id="stat-gifts">0 / 15</div><div class="stat-lbl">Gifts claimed</div></div>
+        <div class="stat-tile"><div class="stat-num" id="stat-gifts">0 / 16</div><div class="stat-lbl">Gifts claimed</div></div>
       </div>
     </div>
   </section>
@@ -541,6 +541,7 @@ const GIFTS = [
   { id: "B0F21PWQ79", name: "Gooyo Notebook Computer Toy", emoji: "💻", link: "https://www.amazon.in/dp/B0F21PWQ79" },
   { id: "B0GQSXNNS4", name: "Gift Option 14", emoji: "🎁", link: "https://www.amazon.in/dp/B0GQSXNNS4" },
   { id: "B0GVKLXDZJ", name: "Gift Option 15", emoji: "🎁", link: "https://www.amazon.in/dp/B0GVKLXDZJ" },
+  { id: "B0DTFMGS1T", name: "Kids Trolley Bag", emoji: "🧳", link: "https://www.amazon.in/American-Tourister-SKIDDLE-Polypropylene-Suitcase/dp/B0DTFMGS1T" },
   { id: "OTHERS", name: "Others", emoji: "🎁", link: null }
 ];
 // ======================================================
@@ -564,15 +565,19 @@ function renderGifts() {
   const giftGrid = document.getElementById('gift-grid');
   giftGrid.innerHTML = '';
   GIFTS.forEach((g) => {
-    const claimedBy = g.link ? claims[g.id] : null;
+    const actuallyClaimed = g.link ? claims[g.id] : null;
+    // Non-admins never see claim status - a gift only reveals itself as taken
+    // at submit time (via the "just claimed by someone else" error), so no
+    // one can see who's picking what by browsing the site.
+    const showClaimed = isAdmin && actuallyClaimed;
     const card = document.createElement('div');
-    card.className = 'gift-card' + (claimedBy ? ' claimed' : '');
+    card.className = 'gift-card' + (showClaimed ? ' claimed' : '');
     card.innerHTML = `
       <div class="emoji">${g.emoji}</div>
       <div class="gname">${g.name}</div>
       ${g.link ? `<a class="gift-link" href="${g.link}" target="_blank">View on Amazon</a>` : ''}
-      ${claimedBy
-        ? `<div class="claimed-tag">${isAdmin ? `Claimed by ${claimedBy}` : 'Already claimed'}</div>`
+      ${showClaimed
+        ? `<div class="claimed-tag">Claimed by ${actuallyClaimed}</div>`
         : `<button type="button" class="pick-btn" onclick="pickGift('${g.id}')">I'll bring this</button>`}
     `;
     giftGrid.appendChild(card);
@@ -864,12 +869,20 @@ function handleRSVP(e) {
     } else {
       text = `Hey Hi,\nI'll not be able to make it for Aura's 5th Birthday Bash, but I wish her a very warm Happy Birthday`;
     }
-    const encodedText = encodeURIComponent(text);
     const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-    if (isMobile) {
-      window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodedText}`, '_blank');
-    } else {
-      window.location.href = `whatsapp://send?phone=${WHATSAPP_NUMBER}&text=${encodedText}`;
+    const sendWA = (msg) => {
+      const encoded = encodeURIComponent(msg);
+      if (isMobile) {
+        window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encoded}`, '_blank');
+      } else {
+        window.location.href = `whatsapp://send?phone=${WHATSAPP_NUMBER}&text=${encoded}`;
+      }
+    };
+    sendWA(text);
+    if (isAttending && gift) {
+      setTimeout(() => {
+        sendWA(`🎁 Gift tracker (admin only)\n${name} is bringing: ${gift.name}`);
+      }, 1200);
     }
     burstConfetti();
   };
