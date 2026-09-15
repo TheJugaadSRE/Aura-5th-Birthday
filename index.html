@@ -565,7 +565,7 @@ function renderGifts() {
       ${g.link ? `<a class="gift-link" href="${g.link}" target="_blank">View on Amazon</a>` : ''}
       ${showClaimed
         ? `<div class="claimed-tag">Claimed by ${actuallyClaimed}</div>`
-        : `<button type="button" class="pick-btn" onclick="pickGift('${g.id}')">I'll bring this</button>`}
+        : `<button type="button" class="pick-btn" onclick="pickGift('${g.id}')">It's on me</button>`}
     `;
     giftGrid.appendChild(card);
   });
