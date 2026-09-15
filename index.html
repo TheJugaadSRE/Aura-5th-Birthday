@@ -903,6 +903,20 @@ function handleRSVP(e) {
   const confirmed = confirm(confirmMsg);
   if (!confirmed) return false;
 
+  const isMobile = /Android|iPhone/i.test(navigator.userAgent);
+  // Open the destination tab(s) synchronously, right now, inside the click's
+  // user-gesture window - iOS Safari blocks window.open() called later from a
+  // Promise .then() (e.g. after the Firebase gift-claim check), even if it
+  // resolves almost instantly. Navigating an already-open tab afterwards is
+  // not restricted, so we just redirect these once we know what to send.
+  let waTab = null, giftTab = null;
+  if (isMobile) {
+    waTab = window.open('', '_blank');
+    if (isAttending && gift) {
+      giftTab = window.open('', '_blank');
+    }
+  }
+
   const proceed = () => {
     saveRSVP({
       name, attending: isAttending, guests: parseInt(guests) || 1, kids: parseInt(kids) || 0,
@@ -914,17 +928,13 @@ function handleRSVP(e) {
     } else {
       text = `Hey Hi,\nI'll not be able to make it for Aura's 5th Birthday Bash, but I wish her a very warm Happy Birthday`;
     }
-    const isMobile = /Android|iPhone/i.test(navigator.userAgent);
     const confirmBox = document.getElementById('rsvp-confirm');
 
     if (isMobile) {
-      const sendWA = (msg) => {
-        window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
-      };
-      sendWA(text);
-      if (isAttending && gift) {
+      if (waTab) waTab.location.href = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`;
+      if (isAttending && gift && giftTab) {
         setTimeout(() => {
-          sendWA(`🎁 Gift tracker (admin only)\n${name} is bringing: ${gift.name}`);
+          giftTab.location.href = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(`🎁 Gift tracker (admin only)\n${name} is bringing: ${gift.name}`)}`;
         }, 1200);
       }
       burstConfetti();
@@ -949,6 +959,8 @@ function handleRSVP(e) {
   if (isAttending && selectedGiftId) {
     claimGift(selectedGiftId, name).then((success) => {
       if (!success) {
+        if (waTab) waTab.close();
+        if (giftTab) giftTab.close();
         document.getElementById('err-gift').textContent = 'That gift was just claimed by someone else — pick another';
         document.getElementById('err-gift').style.display = 'block';
         selectedGiftId = null;
