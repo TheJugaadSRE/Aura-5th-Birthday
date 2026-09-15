@@ -992,12 +992,15 @@ function downloadICS() {
     'END:VCALENDAR'
   ].join('\r\n');
   const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  const blob = new Blob([ics], { type: 'text/calendar' });
+  const url = URL.createObjectURL(blob);
   if (isIOS) {
-    window.location.href = 'data:text/calendar;charset=utf-8,' + encodeURIComponent(ics);
+    // iOS Safari blocks data: URI navigation, but opening a text/calendar
+    // blob in a new tab is recognized and handed off to the Calendar app.
+    window.open(url, '_blank');
   } else {
-    const blob = new Blob([ics], { type: 'text/calendar' });
     const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
+    link.href = url;
     link.download = 'Aura_5th_Birthday.ics';
     link.click();
   }
