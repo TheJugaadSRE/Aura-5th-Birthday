@@ -407,7 +407,7 @@
         <div class="field" id="gift-field" style="display:none;">
           <label>Gift Suggestion*</label>
           <div id="gift-chip-area">
-            <button type="button" class="btn btn-outline" onclick="openGiftModal()">🎁 Pick a gift</button>
+            <button type="button" class="btn btn-outline" onclick="openGiftModal()">🎁 Gift Suggestion</button>
           </div>
           <div class="info-text">Opens gift suggestions — picking one reserves it just for you.</div>
           <div class="error-text" id="err-gift">Pick a gift so it can be reserved for you</div>
@@ -582,7 +582,7 @@ function renderGiftChip() {
     const g = GIFTS.find(x => x.id === selectedGiftId);
     area.innerHTML = `<span class="gift-chosen-chip">🎁 ${g ? g.name : ''} <button type="button" onclick="openGiftModal()">change</button></span>`;
   } else {
-    area.innerHTML = `<button type="button" class="btn btn-outline" onclick="openGiftModal()">🎁 Pick a gift</button>`;
+    area.innerHTML = `<button type="button" class="btn btn-outline" onclick="openGiftModal()">🎁 Gift Suggestion</button>`;
   }
 }
 
