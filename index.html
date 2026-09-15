@@ -553,19 +553,16 @@ function renderGifts() {
   const giftGrid = document.getElementById('gift-grid');
   giftGrid.innerHTML = '';
   GIFTS.forEach((g) => {
-    const actuallyClaimed = g.link ? claims[g.id] : null;
-    // Non-admins never see claim status - a gift only reveals itself as taken
-    // at submit time (via the "just claimed by someone else" error), so no
-    // one can see who's picking what by browsing the site.
-    const showClaimed = isAdmin && actuallyClaimed;
+    // Gifts with no link (Surprise Me / Others) are never unique, so never lock.
+    const claimedBy = g.link ? claims[g.id] : null;
     const card = document.createElement('div');
-    card.className = 'gift-card' + (showClaimed ? ' claimed' : '');
+    card.className = 'gift-card' + (claimedBy ? ' claimed' : '');
     card.innerHTML = `
       <div class="emoji">${g.emoji}</div>
       <div class="gname">${g.name}</div>
       ${g.link ? `<a class="gift-link" href="${g.link}" target="_blank">View on Amazon</a>` : ''}
-      ${showClaimed
-        ? `<div class="claimed-tag">Claimed by ${actuallyClaimed}</div>`
+      ${claimedBy
+        ? `<div class="claimed-tag">${isAdmin ? `Claimed by ${claimedBy}` : 'Already claimed'}</div>`
         : `<button type="button" class="pick-btn" onclick="pickGift('${g.id}')">It's on me</button>`}
     `;
     giftGrid.appendChild(card);
@@ -845,6 +842,9 @@ function handleRSVP(e) {
     document.getElementById('err-gift').style.display = 'none';
   }
   if (!valid) return false;
+
+  const confirmed = confirm("Are you sure the info is correct? Do you want to send the RSVP?");
+  if (!confirmed) return false;
 
   const proceed = () => {
     saveRSVP({
