@@ -263,7 +263,11 @@
     cursor:pointer;font-size:14px;transition:all 0.15s;
   }
   .radio-pill.active{background:var(--neon-pink);border-color:var(--neon-pink);box-shadow:0 0 12px rgba(255,46,224,0.6);}
-  .error-text{color:#ff6b6b;font-size:13px;display:none;}
+  .error-text{color:#ff6b6b;font-size:13px;display:none;font-weight:600;}
+  @keyframes errorPulse{
+    0%,100%{transform:scale(1);}
+    30%{transform:scale(1.15);text-shadow:0 0 10px rgba(255,107,107,0.9);}
+  }
   .info-text{color:#8fd8ff;font-size:12px;margin-top:-6px;}
   .gift-chosen-chip{
     display:inline-flex;align-items:center;gap:10px;background:rgba(255,215,0,0.1);
@@ -878,7 +882,16 @@ function handleRSVP(e) {
   } else {
     document.getElementById('err-gift').style.display = 'none';
   }
-  if (!valid) return false;
+  if (!valid) {
+    const firstError = [...document.querySelectorAll('.error-text')].find(el => el.style.display === 'block');
+    if (firstError) {
+      firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      firstError.style.animation = 'none';
+      void firstError.offsetWidth;
+      firstError.style.animation = 'errorPulse 0.6s ease';
+    }
+    return false;
+  }
 
   let confirmMsg = "Are you sure the info is correct? Do you want to send the RSVP?";
   if (isAttending && gift) {
