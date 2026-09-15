@@ -530,7 +530,15 @@ const EVENT_DATETIME_ISO = "2026-09-26T19:00:00"; // 7:00 PM, Sep 26 2026
 const ADMIN_KEY = "aura5admin";
 const isAdmin = new URLSearchParams(window.location.search).get('admin') === ADMIN_KEY;
 
-const FIREBASE_CONFIG = null; // <-- paste your firebaseConfig object here to enable live cross-guest sync (see comment above)
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyBEuQWpAM4WpsHu-7o2p_3Y_5EI6Nmy1io",
+  authDomain: "aura-birthday.firebaseapp.com",
+  databaseURL: "https://aura-birthday-default-rtdb.firebaseio.com",
+  projectId: "aura-birthday",
+  storageBucket: "aura-birthday.firebasestorage.app",
+  messagingSenderId: "129568998946",
+  appId: "1:129568998946:web:aeb3c79e640754f40a2c7b"
+};
 
 const GIFTS = [
   { id: "SURPRISE", name: "I'll Surprise You", emoji: "🎉", link: null },
