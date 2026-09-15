@@ -857,27 +857,26 @@ function handleRSVP(e) {
     } else {
       text = `Hey Hi,\nI'll not be able to make it for Aura's 5th Birthday Bash, but I wish her a very warm Happy Birthday`;
     }
-    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-    const sendWA = (msg) => {
-      const encoded = encodeURIComponent(msg);
-      if (isMobile) {
-        window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encoded}`, '_blank');
-      } else {
-        window.location.href = `whatsapp://send?phone=${WHATSAPP_NUMBER}&text=${encoded}`;
-      }
-    };
-    sendWA(text);
-    if (isAttending && gift) {
-      setTimeout(() => {
-        sendWA(`🎁 Gift tracker (admin only)\n${name} is bringing: ${gift.name}`);
-      }, 1200);
-    }
-    burstConfetti();
-
+    const isMobile = /Android|iPhone/i.test(navigator.userAgent);
     const confirmBox = document.getElementById('rsvp-confirm');
-    confirmBox.textContent = isAttending
-      ? '🎉 Thanks for confirming — we are eagerly waiting for you!'
-      : "Thanks for letting us know — you'll be missed!";
+
+    if (isMobile) {
+      const sendWA = (msg) => {
+        window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
+      };
+      sendWA(text);
+      if (isAttending && gift) {
+        setTimeout(() => {
+          sendWA(`🎁 Gift tracker (admin only)\n${name} is bringing: ${gift.name}`);
+        }, 1200);
+      }
+      burstConfetti();
+      confirmBox.textContent = isAttending
+        ? '🎉 Thanks for confirming — we are eagerly waiting for you!'
+        : "Thanks for letting us know — you'll be missed!";
+    } else {
+      confirmBox.textContent = '📱 Please open this invite on your mobile phone with WhatsApp installed and submit your RSVP from there, so it reaches us properly.';
+    }
     confirmBox.style.display = 'block';
 
     document.getElementById('rsvp-form').reset();
