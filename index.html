@@ -843,7 +843,11 @@ function handleRSVP(e) {
   }
   if (!valid) return false;
 
-  const confirmed = confirm("Are you sure the info is correct? Do you want to send the RSVP?");
+  let confirmMsg = "Are you sure the info is correct? Do you want to send the RSVP?";
+  if (isAttending && gift) {
+    confirmMsg += `\n\nGift chosen: ${gift.name}`;
+  }
+  const confirmed = confirm(confirmMsg);
   if (!confirmed) return false;
 
   const proceed = () => {
