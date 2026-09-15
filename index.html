@@ -418,6 +418,7 @@
         </div>
         <button type="submit" class="btn btn-primary" style="justify-content:center;">💬 Send RSVP via WhatsApp</button>
       </form>
+      <div id="rsvp-confirm" class="note-box" style="display:none;margin-top:20px;text-align:center;"></div>
     </div>
   </section>
 
@@ -872,6 +873,21 @@ function handleRSVP(e) {
       }, 1200);
     }
     burstConfetti();
+
+    const confirmBox = document.getElementById('rsvp-confirm');
+    confirmBox.textContent = isAttending
+      ? '🎉 Thanks for confirming — we are eagerly waiting for you!'
+      : "Thanks for letting us know — you'll be missed!";
+    confirmBox.style.display = 'block';
+
+    document.getElementById('rsvp-form').reset();
+    document.querySelectorAll('#attend-group .radio-pill').forEach(p => p.classList.remove('active'));
+    selectedAttend = '';
+    selectedGiftId = null;
+    renderGiftChip();
+    document.getElementById('guests-field').style.display = 'none';
+    document.getElementById('kids-field').style.display = 'none';
+    document.getElementById('gift-field').style.display = 'none';
   };
 
   if (isAttending && selectedGiftId) {
