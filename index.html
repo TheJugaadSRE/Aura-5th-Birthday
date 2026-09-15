@@ -409,12 +409,12 @@
           <div class="error-text" id="err-attend">Pick one option</div>
         </div>
         <div class="field" id="guests-field" style="display:none;">
-          <label for="rsvp-guests">Number of guests (incl. you)</label>
-          <input type="number" id="rsvp-guests" min="1" value="1">
+          <label for="rsvp-guests">No of Adults</label>
+          <input type="number" id="rsvp-guests" min="1" placeholder="e.g. 2">
         </div>
         <div class="field" id="kids-field" style="display:none;">
           <label for="rsvp-kids">Number of kids among them</label>
-          <input type="number" id="rsvp-kids" min="0" value="0">
+          <input type="number" id="rsvp-kids" min="0" placeholder="e.g. 1">
         </div>
         <div class="field" id="gift-field" style="display:none;">
           <label>Gift Suggestion*</label>
@@ -860,9 +860,9 @@ function handleRSVP(e) {
     });
     let text;
     if (isAttending) {
-      text = `Hey Hi,\n\nThis is RSVP for Aura's 5th Birthday Bash.\n\n${name} will be there!\nGuests: ${guests}\nKids: ${kids}\n\nLooking forward to this.`;
+      text = `Hey Hi,\n\nThis is RSVP for Aura's 5th Birthday Bash.\n\n${name} will be there!\nAdults: ${guests}\nKids: ${kids}\n\nLooking forward to this.`;
     } else {
-      text = `Hey Hi,\nI'll not be able to make it up for Aura's 5th Birthday Bash, but I wish her a very warm Happy Birthday`;
+      text = `Hey Hi,\nI'll not be able to make it for Aura's 5th Birthday Bash, but I wish her a very warm Happy Birthday`;
     }
     const encodedText = encodeURIComponent(text);
     const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
