@@ -616,7 +616,7 @@ function renderGiftChip() {
 function renderStats() {
   const guestTotal = Object.values(rsvps)
     .filter(r => r.attending)
-    .reduce((sum, r) => sum + (parseInt(r.guests) || 0), 0);
+    .reduce((sum, r) => sum + (parseInt(r.guests) || 0) + (parseInt(r.kids) || 0), 0);
   document.getElementById('stat-guests').textContent = guestTotal;
 }
 
