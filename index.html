@@ -334,7 +334,8 @@
         <div class="cd-box"><div class="num" id="cd-secs">--</div><div class="lbl">Secs</div></div>
       </div>
       <div class="stats-row">
-        <div class="stat-tile"><div class="stat-num" id="stat-guests">0</div><div class="stat-lbl">Guests confirmed</div></div>
+        <div class="stat-tile"><div class="stat-num" id="stat-adults">0</div><div class="stat-lbl">Adults confirmed</div></div>
+        <div class="stat-tile"><div class="stat-num" id="stat-kids">0</div><div class="stat-lbl">Kids confirmed</div></div>
         <div class="stat-tile"><div class="stat-num" id="stat-gifts">0 / 20</div><div class="stat-lbl">Gifts claimed</div></div>
       </div>
     </div>
@@ -621,10 +622,11 @@ function renderGiftChip() {
 }
 
 function renderStats() {
-  const guestTotal = Object.values(rsvps)
-    .filter(r => r.attending)
-    .reduce((sum, r) => sum + (parseInt(r.guests) || 0) + (parseInt(r.kids) || 0), 0);
-  document.getElementById('stat-guests').textContent = guestTotal;
+  const attending = Object.values(rsvps).filter(r => r.attending);
+  const adultTotal = attending.reduce((sum, r) => sum + (parseInt(r.guests) || 0), 0);
+  const kidTotal = attending.reduce((sum, r) => sum + (parseInt(r.kids) || 0), 0);
+  document.getElementById('stat-adults').textContent = adultTotal;
+  document.getElementById('stat-kids').textContent = kidTotal;
 }
 
 function renderWall() {
