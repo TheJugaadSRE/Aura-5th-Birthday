@@ -612,9 +612,9 @@ function renderGifts() {
   statGifts.textContent = `${claimedCount} / ${lockableGifts.length}`;
 }
 
-function renderMyGiftRecall() {
+function renderMyGiftRecall(nameOverride) {
   const box = document.getElementById('my-gift-recall');
-  const myName = loadLocal('auraMyName', null);
+  const myName = (nameOverride && nameOverride.trim()) || loadLocal('auraMyName', null);
   if (!myName) { box.style.display = 'none'; return; }
   // Look up only the records matching this device's own remembered name -
   // rsvps is the same synced Firebase data the admin view reads, but we
@@ -794,6 +794,15 @@ function updateCountdown() {
 }
 updateCountdown();
 setInterval(updateCountdown, 1000);
+
+// Look up "what gift did I pick" live as the guest types their name,
+// so it works even on a device that never submitted the RSVP itself.
+let nameRecallTimer = null;
+document.getElementById('rsvp-name').addEventListener('input', (e) => {
+  clearTimeout(nameRecallTimer);
+  const typed = e.target.value;
+  nameRecallTimer = setTimeout(() => renderMyGiftRecall(typed), 400);
+});
 
 // Attend pill selection
 let selectedAttend = "";
