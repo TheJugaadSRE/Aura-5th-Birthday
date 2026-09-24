@@ -654,17 +654,29 @@ function checkMyGift() {
     result.textContent = 'Enter a name first';
     return;
   }
-  // Only ever surfaces the one record matching the typed name - never a
+  // Only ever surfaces the record(s) matching the typed name - never a
   // list of everyone's picks, even though rsvps holds all of them.
-  const mine = Object.values(rsvps)
-    .filter(r => r.name && r.name.trim().toLowerCase() === typed.toLowerCase() && r.giftName)
-    .sort((a, b) => (b.ts || 0) - (a.ts || 0))[0];
-  if (mine) {
+  const typedLower = typed.toLowerCase();
+  const withGift = Object.values(rsvps).filter(r => r.name && r.giftName);
+
+  // Try an exact full-name match first, then fall back to matching just
+  // the first word of the stored name (so "Shivam" finds "Shivam Jari").
+  let matches = withGift.filter(r => r.name.trim().toLowerCase() === typedLower);
+  if (matches.length === 0) {
+    matches = withGift.filter(r => r.name.trim().toLowerCase().split(/\s+/)[0] === typedLower);
+  }
+
+  const uniqueNames = new Set(matches.map(r => r.name.trim().toLowerCase()));
+  if (matches.length === 0) {
+    result.style.color = '#ff6b6b';
+    result.textContent = "No RSVP found with that name — check the spelling matches what you entered before.";
+  } else if (uniqueNames.size > 1) {
+    result.style.color = '#ff6b6b';
+    result.textContent = "More than one guest matches that first name — please enter your full name to be sure.";
+  } else {
+    const mine = matches.sort((a, b) => (b.ts || 0) - (a.ts || 0))[0];
     result.style.color = 'var(--neon-gold)';
     result.innerHTML = `🎁 You chose: <b>${mine.giftName}</b>`;
-  } else {
-    result.style.color = '#ff6b6b';
-    result.textContent = "No RSVP found with that exact name — check the spelling matches what you entered before.";
   }
 }
 
