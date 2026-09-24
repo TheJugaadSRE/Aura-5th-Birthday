@@ -403,6 +403,7 @@
     <div class="card">
       <div class="section-title">RSVP</div>
       <div class="section-sub">Tap submit and it'll open WhatsApp with your response ready to send</div>
+      <div id="my-gift-recall" class="gift-chosen-chip" style="display:none;margin-bottom:16px;"></div>
       <form id="rsvp-form" onsubmit="return handleRSVP(event)">
         <div class="field">
           <label for="rsvp-name">Your name*</label>
@@ -611,6 +612,24 @@ function renderGifts() {
   statGifts.textContent = `${claimedCount} / ${lockableGifts.length}`;
 }
 
+function renderMyGiftRecall() {
+  const box = document.getElementById('my-gift-recall');
+  const myName = loadLocal('auraMyName', null);
+  if (!myName) { box.style.display = 'none'; return; }
+  // Look up only the records matching this device's own remembered name -
+  // rsvps is the same synced Firebase data the admin view reads, but we
+  // never surface anyone else's entry here, only the caller's own.
+  const mine = Object.values(rsvps)
+    .filter(r => r.name && r.name.trim().toLowerCase() === myName.trim().toLowerCase() && r.giftName)
+    .sort((a, b) => (b.ts || 0) - (a.ts || 0))[0];
+  if (mine) {
+    box.innerHTML = `🎁 You chose: <b>${mine.giftName}</b>`;
+    box.style.display = 'inline-flex';
+  } else {
+    box.style.display = 'none';
+  }
+}
+
 function renderGiftChip() {
   const area = document.getElementById('gift-chip-area');
   if (selectedGiftId) {
@@ -651,6 +670,7 @@ function initSync() {
       rsvps = snap.val() || {};
       renderStats();
       renderWall();
+      renderMyGiftRecall();
     });
   } else {
     claims = loadLocal('auraGiftClaims', {});
@@ -658,6 +678,7 @@ function initSync() {
     renderGifts();
     renderStats();
     renderWall();
+    renderMyGiftRecall();
   }
 }
 initSync();
@@ -923,6 +944,12 @@ function handleRSVP(e) {
       name, attending: isAttending, guests: parseInt(guests) || 1, kids: parseInt(kids) || 0,
       giftId: selectedGiftId || null, giftName: gift ? gift.name : null, message: msg || null, ts: Date.now()
     });
+    saveLocal('auraMyName', name);
+    if (!fbDb) {
+      // No live Firebase sync in this mode - update the recall immediately
+      // from what we just saved locally instead of waiting on nothing.
+      renderMyGiftRecall();
+    }
     let text;
     if (isAttending) {
       text = `Hey Hi,\n\nThis is RSVP for Aura's 5th Birthday Bash.\n\n${name} will be there!\nAdults: ${guests}\nKids: ${kids}\n\nLooking forward to this.`;
