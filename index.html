@@ -232,6 +232,12 @@
     align-items:flex-start;justify-content:center;overflow-y:auto;padding:40px 16px;
   }
   #gift-modal-overlay.open{display:flex;}
+  #recall-modal-overlay{
+    display:none;position:fixed;inset:0;z-index:1000;
+    background:rgba(5,1,14,0.82);backdrop-filter:blur(3px);
+    align-items:center;justify-content:center;overflow-y:auto;padding:40px 16px;
+  }
+  #recall-modal-overlay.open{display:flex;}
   .gift-modal{
     position:relative;max-width:640px;width:100%;border-radius:22px;overflow:hidden;
     border:1px solid rgba(255,46,224,0.4);box-shadow:0 0 50px rgba(166,59,255,0.4);
@@ -403,7 +409,9 @@
     <div class="card">
       <div class="section-title">RSVP</div>
       <div class="section-sub">Tap submit and it'll open WhatsApp with your response ready to send</div>
-      <div id="my-gift-recall" class="gift-chosen-chip" style="display:none;margin-bottom:16px;"></div>
+      <div style="text-align:center;margin-bottom:16px;">
+        <button type="button" class="btn btn-outline" onclick="openGiftRecallModal()">🎁 Click to know which gift you chose</button>
+      </div>
       <form id="rsvp-form" onsubmit="return handleRSVP(event)">
         <div class="field">
           <label for="rsvp-name">Your name*</label>
@@ -465,6 +473,23 @@
 
 <div id="photo-lightbox" onclick="closeLightbox()">
   <img id="photo-lightbox-img" src="" alt="Aura, enlarged">
+</div>
+
+<div id="recall-modal-overlay" onclick="if(event.target===this) closeGiftRecallModal()">
+  <div class="gift-modal" style="max-width:380px;">
+    <div class="gift-modal-inner">
+      <div class="gift-modal-header">
+        <h3>Which gift did I pick?</h3>
+        <button class="gift-modal-close" onclick="closeGiftRecallModal()" aria-label="Close">✕</button>
+      </div>
+      <div class="section-sub" style="margin-bottom:14px;">Enter the exact name you used when you RSVP'd</div>
+      <div class="field">
+        <input type="text" id="recall-name-input" placeholder="e.g. Priya Sharma">
+      </div>
+      <button type="button" class="btn btn-primary" style="justify-content:center;width:100%;margin-top:14px;" onclick="checkMyGift()">Check</button>
+      <div id="recall-result" style="margin-top:16px;text-align:center;font-size:15px;"></div>
+    </div>
+  </div>
 </div>
 
 <div id="gift-modal-overlay" onclick="if(event.target===this) closeGiftModal()">
@@ -612,21 +637,34 @@ function renderGifts() {
   statGifts.textContent = `${claimedCount} / ${lockableGifts.length}`;
 }
 
-function renderMyGiftRecall(nameOverride) {
-  const box = document.getElementById('my-gift-recall');
-  const myName = (nameOverride && nameOverride.trim()) || loadLocal('auraMyName', null);
-  if (!myName) { box.style.display = 'none'; return; }
-  // Look up only the records matching this device's own remembered name -
-  // rsvps is the same synced Firebase data the admin view reads, but we
-  // never surface anyone else's entry here, only the caller's own.
+function openGiftRecallModal() {
+  document.getElementById('recall-result').textContent = '';
+  document.getElementById('recall-name-input').value = '';
+  document.getElementById('recall-modal-overlay').classList.add('open');
+  document.getElementById('recall-name-input').focus();
+}
+function closeGiftRecallModal() {
+  document.getElementById('recall-modal-overlay').classList.remove('open');
+}
+function checkMyGift() {
+  const typed = document.getElementById('recall-name-input').value.trim();
+  const result = document.getElementById('recall-result');
+  if (!typed) {
+    result.style.color = '#ff6b6b';
+    result.textContent = 'Enter a name first';
+    return;
+  }
+  // Only ever surfaces the one record matching the typed name - never a
+  // list of everyone's picks, even though rsvps holds all of them.
   const mine = Object.values(rsvps)
-    .filter(r => r.name && r.name.trim().toLowerCase() === myName.trim().toLowerCase() && r.giftName)
+    .filter(r => r.name && r.name.trim().toLowerCase() === typed.toLowerCase() && r.giftName)
     .sort((a, b) => (b.ts || 0) - (a.ts || 0))[0];
   if (mine) {
-    box.innerHTML = `🎁 You chose: <b>${mine.giftName}</b>`;
-    box.style.display = 'inline-flex';
+    result.style.color = 'var(--neon-gold)';
+    result.innerHTML = `🎁 You chose: <b>${mine.giftName}</b>`;
   } else {
-    box.style.display = 'none';
+    result.style.color = '#ff6b6b';
+    result.textContent = "No RSVP found with that exact name — check the spelling matches what you entered before.";
   }
 }
 
@@ -670,7 +708,6 @@ function initSync() {
       rsvps = snap.val() || {};
       renderStats();
       renderWall();
-      renderMyGiftRecall();
     });
   } else {
     claims = loadLocal('auraGiftClaims', {});
@@ -678,7 +715,6 @@ function initSync() {
     renderGifts();
     renderStats();
     renderWall();
-    renderMyGiftRecall();
   }
 }
 initSync();
@@ -794,15 +830,6 @@ function updateCountdown() {
 }
 updateCountdown();
 setInterval(updateCountdown, 1000);
-
-// Look up "what gift did I pick" live as the guest types their name,
-// so it works even on a device that never submitted the RSVP itself.
-let nameRecallTimer = null;
-document.getElementById('rsvp-name').addEventListener('input', (e) => {
-  clearTimeout(nameRecallTimer);
-  const typed = e.target.value;
-  nameRecallTimer = setTimeout(() => renderMyGiftRecall(typed), 400);
-});
 
 // Attend pill selection
 let selectedAttend = "";
@@ -953,12 +980,6 @@ function handleRSVP(e) {
       name, attending: isAttending, guests: parseInt(guests) || 1, kids: parseInt(kids) || 0,
       giftId: selectedGiftId || null, giftName: gift ? gift.name : null, message: msg || null, ts: Date.now()
     });
-    saveLocal('auraMyName', name);
-    if (!fbDb) {
-      // No live Firebase sync in this mode - update the recall immediately
-      // from what we just saved locally instead of waiting on nothing.
-      renderMyGiftRecall();
-    }
     let text;
     if (isAttending) {
       text = `Hey Hi,\n\nThis is RSVP for Aura's 5th Birthday Bash.\n\n${name} will be there!\nAdults: ${guests}\nKids: ${kids}\n\nLooking forward to this.`;
